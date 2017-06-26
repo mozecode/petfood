@@ -3,8 +3,8 @@ let dogfoodRequest = new XMLHttpRequest();
 
 //create empty data object, empty array to hold each data object as it's created, and empty card array
 
+let newFoodArray=[];
 
-let cardArray =[];
 
 //target nodes for output
 let outputDog = document.getElementById("outputDog");
@@ -28,26 +28,25 @@ function loadHandler(){
 
 function outputDataToNewArray(data){
 	console.log ("data", data);
-	let dataObj={};
-	let newFoodArray=[];
+
 	for(var i=0; i<data.length; i++){
-		dataObj.name=data[i].name;
-
 		for(var j=0; j<data[i].types.length; j++){
-			dataObj.type=data[i].types[j].type;
 			for(var k=0; k<data[i].types[j].volumes.length; k++){
-				dataObj.size=data[i].types[j].volumes[k].name;
-				dataObj.cost=data[i].types[j].volumes[k].price;
+				let dataObj={
+					type: data[i].types[j].type,
+					name: data[i].name,
+					size: data[i].types[j].volumes[k].name,
+					cost: data[i].types[j].volumes[k].price
+				};
 				console.log ("dataObj",dataObj);
+				console.log ("newFoodArray", newFoodArray);
 				newFoodArray.push(dataObj);
-
-				console.log ("newFoodArray",newFoodArray);
 			}
 
 		}
 
 	}
-
+	outputToDOM(newFoodArray);
 }
 
 function errorHandler(){
@@ -60,27 +59,34 @@ dogfoodRequest.addEventListener("error", errorHandler);
 
 
 //card builder takes in the array of objects and iterates through each object to output the cards.
-function cardBuilder(newFoodArray, cardArray){
+function cardBuilder(newFoodArray){
+	console.log (newFoodArray);
+	let cardArray =[];
 	newFoodArray.forEach(function (object){
-
-	let card = `<div class="card">
-					<h2>Dog Food Name: ${object.name}</h2>
-					<h3>Type: ${object.type}</h3>
-					<h3>Size: ${object.size}</h3>
-					<h3>${object.cost}</h3>
-				</div>`
-	cardArray.push(card);
+		let card = `<div class="card">
+						<h2>Dog Food Name: ${object.name}</h2>
+						<h3>Type: ${object.type}</h3>
+						<h3>Size: ${object.size}</h3>
+						<h3>${object.cost}</h3>
+					</div>`
+		cardArray.push(card);
+		console.log ("cardArray",cardArray);
+	});
 	return cardArray;
-	})
 }
 
-//output the cards to the dom
-function outputToDOM(arr){
+console.log ("newFoodArray",newFoodArray);
 
+
+
+//output the cards to the dom
+function outputToDOM(newFoodArray){
+	cardArray=cardBuilder(newFoodArray);
+	console.log ("cardArray",cardArray);
 	cardArray.forEach(function(card){
 	outputDog.innerHTML+= card;
 
 	});
 }
 
-outputToDOM(cardArray);
+
